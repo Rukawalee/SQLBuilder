@@ -1,0 +1,2 @@
+# SQLBuilder
+Generate SQL faster
