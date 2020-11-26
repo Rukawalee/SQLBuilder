@@ -1,7 +1,7 @@
 package com.rukawa.sql.enumeration;
 
+import com.rukawa.common.util.BeanUtil;
 import com.rukawa.sql.executor.JdbcTemplate;
-import com.rukawa.sql.util.BeanUtil;
 
 import java.util.Arrays;
 import java.util.Optional;

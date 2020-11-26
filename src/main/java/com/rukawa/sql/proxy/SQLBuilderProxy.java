@@ -1,5 +1,8 @@
 package com.rukawa.sql.proxy;
 
+import com.rukawa.common.util.BeanUtil;
+import com.rukawa.common.util.CamelCaseUtil;
+import com.rukawa.common.util.CollectionUtil;
 import com.rukawa.sql.configuration.SQLBuilderConfiguration;
 import com.rukawa.sql.enumeration.SQLBuilderExecutorClassType;
 import com.rukawa.sql.enumeration.SimilarType;
@@ -7,10 +10,6 @@ import com.rukawa.sql.exception.UniqueSimilarException;
 import com.rukawa.sql.param.OrderParam;
 import com.rukawa.sql.param.RangeParam;
 import com.rukawa.sql.param.SQLParam;
-import com.rukawa.sql.util.BeanUtil;
-import com.rukawa.sql.util.CamelCaseUtil;
-import com.rukawa.sql.util.CollectionUtil;
-import sun.util.resources.cldr.ml.CalendarData_ml_IN;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -107,16 +106,16 @@ public class SQLBuilderProxy implements InvocationHandler {
         if (!BeanUtil.isEmpty(sqlParam.getSimilarMap())) {
             fieldSet.addAll(sqlParam.getSimilarMap().keySet());
         }
-        if(!BeanUtil.isEmpty(sqlParam.getPreSimilarMap())) {
+        if (!BeanUtil.isEmpty(sqlParam.getPreSimilarMap())) {
             Set<String> preFieldSet = sqlParam.getPreSimilarMap().keySet();
             if (CollectionUtil.retains(fieldSet, preFieldSet)) {
                 throw new UniqueSimilarException();
             }
             fieldSet.addAll(preFieldSet);
         }
-        if(!BeanUtil.isEmpty(sqlParam.getSuffixSimilarMap())) {
+        if (!BeanUtil.isEmpty(sqlParam.getSuffixSimilarMap())) {
             Set<String> suffixFieldSet = sqlParam.getSuffixSimilarMap().keySet();
-            if(CollectionUtil.retains(fieldSet, suffixFieldSet)) {
+            if (CollectionUtil.retains(fieldSet, suffixFieldSet)) {
                 throw new UniqueSimilarException();
             }
         }

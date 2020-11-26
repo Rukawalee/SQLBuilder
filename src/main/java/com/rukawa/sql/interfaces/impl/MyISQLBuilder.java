@@ -1,5 +1,7 @@
 package com.rukawa.sql.interfaces.impl;
 
+import com.rukawa.common.util.BeanUtil;
+import com.rukawa.common.util.CollectionUtil;
 import com.rukawa.sql.abs.ISQLBuilderAbs;
 import com.rukawa.sql.enumeration.RangeSymbol;
 import com.rukawa.sql.exception.NoneExecutionException;
@@ -8,8 +10,6 @@ import com.rukawa.sql.param.OrderParam;
 import com.rukawa.sql.param.PageParam;
 import com.rukawa.sql.param.RangeParam;
 import com.rukawa.sql.param.SQLParam;
-import com.rukawa.sql.util.BeanUtil;
-import com.rukawa.sql.util.CollectionUtil;
 
 import java.util.Collection;
 import java.util.HashMap;

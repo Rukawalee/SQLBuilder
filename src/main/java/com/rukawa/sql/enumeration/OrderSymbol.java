@@ -1,6 +1,6 @@
 package com.rukawa.sql.enumeration;
 
-import com.rukawa.sql.util.StringUtil;
+import com.rukawa.common.util.StringUtil;
 
 import java.util.Arrays;
 import java.util.Optional;

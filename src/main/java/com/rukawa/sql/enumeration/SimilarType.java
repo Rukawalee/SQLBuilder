@@ -1,7 +1,6 @@
 package com.rukawa.sql.enumeration;
 
-import com.rukawa.sql.util.BeanUtil;
-import com.rukawa.sql.util.StringUtil;
+import com.rukawa.common.util.BeanUtil;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -30,7 +29,7 @@ public enum SimilarType {
         Optional<SimilarType> similarTypeOptional = Arrays.stream(values())
                 .filter(value -> type.contains(value.type.toLowerCase()))
                 .findFirst();
-        if(similarTypeOptional.isPresent()) {
+        if (similarTypeOptional.isPresent()) {
             return similarTypeOptional.get();
         }
         return OTHER;

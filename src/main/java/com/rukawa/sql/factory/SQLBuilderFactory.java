@@ -1,10 +1,10 @@
 package com.rukawa.sql.factory;
 
+import com.rukawa.common.util.BeanUtil;
 import com.rukawa.sql.configuration.SQLBuilderConfiguration;
 import com.rukawa.sql.interfaces.ISQLBuilder;
 import com.rukawa.sql.interfaces.impl.MyISQLBuilder;
 import com.rukawa.sql.proxy.SQLBuilderProxy;
-import com.rukawa.sql.util.BeanUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -60,7 +60,7 @@ public class SQLBuilderFactory {
             if (BeanUtil.isEmpty(sqlBuilderClass) && !BeanUtil.isEmpty(configuration.getSqlBuilderClassName())) {
                 sqlBuilderClass = Class.forName(configuration.getSqlBuilderClassName());
             }
-            if(!BeanUtil.isEmpty(sqlBuilderClass)) {
+            if (!BeanUtil.isEmpty(sqlBuilderClass)) {
                 Object sqlBuilderObj = sqlBuilderClass.getDeclaredConstructor(String.class).newInstance(tableName);
                 SQLBuilderProxy sqlBuilderProxy = new SQLBuilderProxy(sqlBuilderObj, configuration);
                 return (ISQLBuilder) Proxy.newProxyInstance(classLoader, sqlBuilderClass.getInterfaces(), sqlBuilderProxy);
