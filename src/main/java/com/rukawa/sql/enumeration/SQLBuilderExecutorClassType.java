@@ -1,14 +1,15 @@
 package com.rukawa.sql.enumeration;
 
 import com.rukawa.common.util.BeanUtil;
-import com.rukawa.sql.executor.JdbcTemplate;
+import org.springframework.jdbc.core.JdbcTemplate;
 
+import java.sql.Driver;
 import java.util.Arrays;
 import java.util.Optional;
 
 public enum SQLBuilderExecutorClassType {
     JDBC_TEMPLATE(JdbcTemplate.class, "org.springframework.jdbc.core.JdbcTemplate"),
-    JDBC(null, null);
+    JDBC(Driver.class, "java.sql.Driver");
 
     private Class clazz;
 

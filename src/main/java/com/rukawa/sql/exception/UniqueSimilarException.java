@@ -1,6 +1,6 @@
 package com.rukawa.sql.exception;
 
-public class UniqueSimilarException extends Exception {
+public class UniqueSimilarException extends RuntimeException {
 
     public UniqueSimilarException() {
         super("Unique similar field");

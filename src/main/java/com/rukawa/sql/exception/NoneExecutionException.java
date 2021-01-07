@@ -1,6 +1,6 @@
 package com.rukawa.sql.exception;
 
-public class NoneExecutionException extends Exception {
+public class NoneExecutionException extends RuntimeException {
 
     public NoneExecutionException() {
         super("Cannot find execution fields");

@@ -3,7 +3,7 @@ package com.rukawa.sql.factory;
 import com.rukawa.common.util.BeanUtil;
 import com.rukawa.sql.configuration.SQLBuilderConfiguration;
 import com.rukawa.sql.interfaces.ISQLBuilder;
-import com.rukawa.sql.interfaces.impl.MyISQLBuilder;
+import com.rukawa.sql.interfaces.impl.MySQLBuilder;
 import com.rukawa.sql.proxy.SQLBuilderProxy;
 
 import java.io.File;
@@ -25,7 +25,7 @@ public class SQLBuilderFactory {
      * @return ISQLBuilder
      */
     public static ISQLBuilder createDefaultSQLBuilder(String tableName) {
-        MyISQLBuilder mySQLBuilder = new MyISQLBuilder(tableName);
+        ISQLBuilder mySQLBuilder = new MySQLBuilder(tableName);
         SQLBuilderProxy sqlBuilderProxy = new SQLBuilderProxy(mySQLBuilder, null);
         return (ISQLBuilder) Proxy.newProxyInstance(classLoader, mySQLBuilder.getClass().getInterfaces(), sqlBuilderProxy);
     }

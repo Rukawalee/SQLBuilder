@@ -4,6 +4,7 @@ import com.rukawa.common.util.BeanUtil;
 import com.rukawa.common.util.CollectionUtil;
 import com.rukawa.sql.abs.ISQLBuilderAbs;
 import com.rukawa.sql.enumeration.RangeSymbol;
+import com.rukawa.sql.exception.NoneAttributeException;
 import com.rukawa.sql.exception.NoneExecutionException;
 import com.rukawa.sql.interfaces.ISQLBuilder;
 import com.rukawa.sql.param.OrderParam;
@@ -17,14 +18,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class MyISQLBuilder extends ISQLBuilderAbs implements ISQLBuilder {
+public class MySQLBuilder extends ISQLBuilderAbs implements ISQLBuilder {
 
-    public MyISQLBuilder(String tableName) {
+    public MySQLBuilder(String tableName) {
         super(tableName);
     }
 
     @Override
-    public StringBuilder buildInsertSQL(Collection<String> executionFields) throws NoneExecutionException {
+    public StringBuilder buildInsertSQL(Collection<String> executionFields) {
         StringBuilder sqlBuilder = new StringBuilder();
         if (!CollectionUtil.isEmpty(executionFields)) {
             sqlBuilder.append("INSERT INTO ")
@@ -43,23 +44,30 @@ public class MyISQLBuilder extends ISQLBuilderAbs implements ISQLBuilder {
     }
 
     @Override
-    public StringBuilder buildDeleteSQL() {
+    public StringBuilder buildDeleteSQL(Collection<String> conditionFields, String delimiter) {
         StringBuilder sqlBuilder = new StringBuilder("DELETE FROM ");
-        return sqlBuilder.append(this.getTableName());
+        sqlBuilder.append(this.getTableName());
+        if (!CollectionUtil.isEmpty(conditionFields)) {
+            sqlBuilder.append(" WHERE ")
+                    .append(conditionFields.stream()
+                            .map(conditionField -> conditionField + " = ?")
+                            .collect(Collectors.joining(" " + delimiter + " ")));
+        }
+        return sqlBuilder;
     }
 
     @Override
     public StringBuilder buildDeleteSQLWithParam(SQLParam param) {
         StringBuilder sqlBuilder = new StringBuilder();
         if (!BeanUtil.isEmpty(param)) {
-            sqlBuilder.append(buildDeleteSQL())
+            sqlBuilder.append(buildDeleteSQL(null, null))
                     .append(buildWhereSQLWithParam(param));
         }
         return sqlBuilder;
     }
 
     @Override
-    public StringBuilder buildUpdateSQL(Collection<String> executionFields) throws NoneExecutionException {
+    public StringBuilder buildUpdateSQL(Collection<String> executionFields) {
         StringBuilder sqlBuilder = new StringBuilder();
         if (!CollectionUtil.isEmpty(executionFields)) {
             sqlBuilder.append("UPDATE ")
@@ -75,7 +83,7 @@ public class MyISQLBuilder extends ISQLBuilderAbs implements ISQLBuilder {
     }
 
     @Override
-    public StringBuilder buildUpdateSQLWithParam(SQLParam param) throws NoneExecutionException {
+    public StringBuilder buildUpdateSQLWithParam(SQLParam param) {
         StringBuilder sqlBuilder = new StringBuilder();
         if (!BeanUtil.isEmpty(param)) {
             sqlBuilder.append(buildUpdateSQL(param.getExecutionFields()))
@@ -85,7 +93,7 @@ public class MyISQLBuilder extends ISQLBuilderAbs implements ISQLBuilder {
     }
 
     @Override
-    public StringBuilder buildSelectSQL(Collection<String> executionFields) throws NoneExecutionException {
+    public StringBuilder buildSelectSQL(Collection<String> executionFields) {
         StringBuilder sqlBuilder = new StringBuilder();
         if (!CollectionUtil.isEmpty(executionFields)) {
             sqlBuilder.append("SELECT ")
@@ -99,7 +107,7 @@ public class MyISQLBuilder extends ISQLBuilderAbs implements ISQLBuilder {
     }
 
     @Override
-    public StringBuilder buildSelectSQLWithParam(SQLParam param) throws NoneExecutionException {
+    public StringBuilder buildSelectSQLWithParam(SQLParam param) {
         StringBuilder sqlBuilder = new StringBuilder();
         if (!BeanUtil.isEmpty(param)) {
             sqlBuilder.append(buildSelectSQL(param.getExecutionFields()))
@@ -211,8 +219,8 @@ public class MyISQLBuilder extends ISQLBuilderAbs implements ISQLBuilder {
                     .map(rangeParam -> rangeParam.getFieldName() +
                             (rangeParam.getRangeSymbol().equals(RangeSymbol.BETWEEN_AND)
                                     ? " BETWEEN " + rangeParam.getLower() + " AND " + rangeParam.getUpper()
-                                    : rangeParam.getRangeSymbol().getSymbol()) +
-                            (BeanUtil.isEmpty(rangeParam.getLower()) ? rangeParam.getUpper() : rangeParam.getLower()))
+                                    : rangeParam.getRangeSymbol().getSymbol() +
+                                    (BeanUtil.isEmpty(rangeParam.getLower()) ? rangeParam.getUpper() : rangeParam.getLower())))
                     .collect(Collectors.joining(" " + delimiter + " ")));
         }
         return sqlBuilder;
@@ -222,6 +230,9 @@ public class MyISQLBuilder extends ISQLBuilderAbs implements ISQLBuilder {
     public StringBuilder buildOrderSQL(Collection<OrderParam> orderParams, String delimiter) {
         StringBuilder sqlBuilder = new StringBuilder();
         if (!CollectionUtil.isEmpty(orderParams)) {
+            if (orderParams.stream().anyMatch(BeanUtil::isAttributesEmpty)) {
+                throw new NoneAttributeException();
+            }
             sqlBuilder.append(" ORDER BY ")
                     .append(orderParams.stream()
                             .map(orderParam -> orderParam.getFieldName() + orderParam.getOrderSymbol().getSymbol())
@@ -234,6 +245,9 @@ public class MyISQLBuilder extends ISQLBuilderAbs implements ISQLBuilder {
     public StringBuilder buildLimitSQL(PageParam pageParam) {
         StringBuilder sqlBuilder = new StringBuilder();
         if (!BeanUtil.isEmpty(pageParam)) {
+            if (BeanUtil.isAttributesEmpty(pageParam)) {
+                throw new NoneAttributeException();
+            }
             int offset = (pageParam.getCurrent() == 1 ? 1 : pageParam.getCurrent() - 1) * pageParam.getPageSize();
             sqlBuilder.append(" LIMIT ")
                     .append(offset)

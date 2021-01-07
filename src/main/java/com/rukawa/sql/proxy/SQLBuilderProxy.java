@@ -33,28 +33,35 @@ public class SQLBuilderProxy implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         if (!filterObjectMethod(method.getName())) {
-            if (args[0] instanceof Collection) {
-                args[0] = before((Collection) args[0]);
+            if (!BeanUtil.isEmpty(args)) {
+                if (args[0] instanceof Collection) {
+                    args[0] = before((Collection) args[0]);
+                }
+                if (args[0] instanceof SQLParam) {
+                    SQLParam sqlParam = (SQLParam) args[0];
+                    beforeCheckSimilar(sqlParam);
+                    beforeWithParam(sqlParam);
+                    args[0] = sqlParam;
+                }
             }
-            if (args[0] instanceof SQLParam) {
-                SQLParam sqlParam = (SQLParam) args[0];
-                beforeCheckSimilar(sqlParam);
-                beforeWithParam(sqlParam);
-                args[0] = sqlParam;
-            }
+        }
+        if (method.getName().contains("toString")) {
+            return method.invoke(object, args);
         }
         StringBuilder sqlBuilder = (StringBuilder) method.invoke(object, args);
         SimilarType similarType = SimilarType.getInstance(method.getName().toLowerCase());
-        if (args[0] instanceof SQLParam) {
-            SQLParam sqlParam = (SQLParam) args[0];
-            afterSimilarWithParam(sqlParam, sqlBuilder);
-            afterWithParam(sqlParam, sqlBuilder);
-        }
-        if (!similarType.equals(SimilarType.OTHER)) {
-            afterSimilar(args[0], sqlBuilder);
-        } else {
-            if (args[0] instanceof Collection) {
-                after((Collection) args[0], sqlBuilder);
+        if (!BeanUtil.isEmpty(args)) {
+            if (args[0] instanceof SQLParam) {
+                SQLParam sqlParam = (SQLParam) args[0];
+                afterSimilarWithParam(sqlParam, sqlBuilder);
+                afterWithParam(sqlParam, sqlBuilder);
+            }
+            if (!similarType.equals(SimilarType.OTHER)) {
+                afterSimilar(args[0], sqlBuilder);
+            } else {
+                if (args[0] instanceof Collection) {
+                    after((Collection) args[0], sqlBuilder);
+                }
             }
         }
         String sqlBuilderStr = sqlBuilder.toString().trim();

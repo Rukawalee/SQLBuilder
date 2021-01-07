@@ -1,6 +1,5 @@
 package com.rukawa.sql.interfaces;
 
-import com.rukawa.sql.exception.NoneExecutionException;
 import com.rukawa.sql.param.OrderParam;
 import com.rukawa.sql.param.PageParam;
 import com.rukawa.sql.param.RangeParam;
@@ -11,19 +10,19 @@ import java.util.Map;
 
 public interface ISQLBuilder {
 
-    StringBuilder buildInsertSQL(Collection<String> executionFields) throws NoneExecutionException;
+    StringBuilder buildInsertSQL(Collection<String> executionFields);
 
-    StringBuilder buildDeleteSQL();
+    StringBuilder buildDeleteSQL(Collection<String> conditionFields, String delimiter);
 
     StringBuilder buildDeleteSQLWithParam(SQLParam param);
 
-    StringBuilder buildUpdateSQL(Collection<String> executionFields) throws NoneExecutionException;
+    StringBuilder buildUpdateSQL(Collection<String> executionFields);
 
-    StringBuilder buildUpdateSQLWithParam(SQLParam param) throws NoneExecutionException;
+    StringBuilder buildUpdateSQLWithParam(SQLParam param);
 
-    StringBuilder buildSelectSQL(Collection<String> executionFields) throws NoneExecutionException;
+    StringBuilder buildSelectSQL(Collection<String> executionFields);
 
-    StringBuilder buildSelectSQLWithParam(SQLParam param) throws NoneExecutionException;
+    StringBuilder buildSelectSQLWithParam(SQLParam param);
 
     StringBuilder buildWhereSQL(Collection<String> conditionFields, String delimiter);
 
