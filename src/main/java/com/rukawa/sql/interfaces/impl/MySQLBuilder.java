@@ -140,9 +140,7 @@ public class MySQLBuilder extends ISQLBuilderAbs implements ISQLBuilder {
                     && (!CollectionUtil.isEmpty(param.getRangeParam())
                     || !BeanUtil.isEmpty(param.getSimilarMap())
                     || !BeanUtil.isEmpty(param.getPreSimilarMap())
-                    || !BeanUtil.isEmpty(param.getSuffixSimilarMap())
-                    || !CollectionUtil.isEmpty(param.getOrderParam())
-                    || !BeanUtil.isEmpty(param.getPageParam()))) {
+                    || !BeanUtil.isEmpty(param.getSuffixSimilarMap()))) {
                 sqlBuilder.append(" WHERE ");
             }
             if (!CollectionUtil.isEmpty(param.getRangeParam())) {
