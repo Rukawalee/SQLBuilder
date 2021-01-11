@@ -216,9 +216,10 @@ public class MySQLBuilder extends ISQLBuilderAbs implements ISQLBuilder {
             sqlBuilder.append(rangeParams.stream()
                     .map(rangeParam -> rangeParam.getFieldName() +
                             (rangeParam.getRangeSymbol().equals(RangeSymbol.BETWEEN_AND)
-                                    ? " BETWEEN " + rangeParam.getLower() + " AND " + rangeParam.getUpper()
+                                    ? " BETWEEN '" + rangeParam.getLower() + "' AND '" + rangeParam.getUpper() + "' "
                                     : rangeParam.getRangeSymbol().getSymbol() +
-                                    (BeanUtil.isEmpty(rangeParam.getLower()) ? rangeParam.getUpper() : rangeParam.getLower())))
+                                    (" '" + (BeanUtil.isEmpty(rangeParam.getLower()) ? rangeParam.getUpper()
+                                            : rangeParam.getLower()) + "' ")))
                     .collect(Collectors.joining(" " + delimiter + " ")));
         }
         return sqlBuilder;
