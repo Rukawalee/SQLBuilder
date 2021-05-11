@@ -60,8 +60,12 @@ public class MySQLBuilder extends ISQLBuilderAbs implements ISQLBuilder {
     public StringBuilder buildDeleteSQLWithParam(SQLParam param) {
         StringBuilder sqlBuilder = new StringBuilder();
         if (!BeanUtil.isEmpty(param)) {
+            SQLParam sqlParam = new SQLParam();
+            sqlParam = BeanUtil.updateObject(sqlParam, param);
+            sqlParam.setOrderParam(null);
+            sqlParam.setPageParam(null);
             sqlBuilder.append(buildDeleteSQL(null, null))
-                    .append(buildWhereSQLWithParam(param));
+                    .append(buildWhereSQLWithParam(sqlParam));
         }
         return sqlBuilder;
     }
@@ -247,7 +251,7 @@ public class MySQLBuilder extends ISQLBuilderAbs implements ISQLBuilder {
             if (BeanUtil.isAttributesEmpty(pageParam)) {
                 throw new NoneAttributeException();
             }
-            int offset = (pageParam.getCurrent() == 1 ? 1 : pageParam.getCurrent() - 1) * pageParam.getPageSize();
+            int offset = (pageParam.getCurrent() < 1 ? 0 : pageParam.getCurrent() - 1) * pageParam.getPageSize();
             sqlBuilder.append(" LIMIT ")
                     .append(offset)
                     .append(", ")
